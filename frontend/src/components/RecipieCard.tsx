@@ -77,7 +77,7 @@ const RecipieCard: React.FC<RecipeCarsProps> = ({ recipe }) => {
   return (
     <RecipeCard>
       <RecipeTitle>{recipe.title}</RecipeTitle>
-      <RecipeImage src={recipe.image} alt={recipe.title} />
+      <RecipeImage src={recipe.image || ""} alt={recipe.title} />
       <RecipeIngredients>
         {recipe.ingredients.map((ingredient, index) => (
           <RecipeIngredient key={index}>

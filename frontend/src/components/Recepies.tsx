@@ -1,65 +1,39 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import RecipieCard from "./RecipieCard";
 
 const Container = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  color: #3d1716;
 `;
 
 const Input = styled.input`
   font-size: 1rem;
   padding: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  background-color: #280707;
+  color: #c1aaaa;
+  border-radius: 8px;
+  border: none;
 `;
 
-const RecipeContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1rem;
-  border: 1px solid black;
-  padding: 1rem;
-  background-color: white;
-  color: black;
-`;
-
-const RecipeTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  text-align: left;
-`;
-
-const RecipeIngredients = styled.ul`
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-`;
-
-const RecipeIngredient = styled.li`
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-  display: flex;
-  gap: 1rem;
-`;
-
-const RecipeIngredientName = styled.span`
-  font-weight: bold;
-`;
-
-const RecipeIngredientMeasure = styled.span`
-  font-style: italic;
+const RecipeGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 3rem;
+  width: 100%;
 `;
 
 interface IMeal {
@@ -68,7 +42,8 @@ interface IMeal {
   [key: string]: string | null;
 }
 
-interface IRecipe {
+export interface IRecipe {
+  id: string;
   title: string;
   ingredients: { name: string; measure: string }[];
 }
@@ -110,6 +85,7 @@ const Recepies: React.FC = () => {
       }, [] as { name: string; measure: string }[]);
 
       return {
+        id: meal.idMeal,
         title: meal.strMeal,
         ingredients,
       };
@@ -129,31 +105,19 @@ const Recepies: React.FC = () => {
   }, [search]);
 
   return (
-    <>
+    <Container>
       <Title>Recepies</Title>
       <Input
         type="text"
         onChange={(e) => setSearch(e.target.value)}
         placeholder="Search for a recipe"
       />
-      <Container>
+      <RecipeGrid>
         {recipes.map((recipe) => (
-          <RecipeContainer key={recipe.title}>
-            <RecipeTitle>{recipe.title}</RecipeTitle>
-            <RecipeIngredients>
-              {recipe.ingredients.map((ingredient) => (
-                <RecipeIngredient key={ingredient.name}>
-                  <RecipeIngredientName>{ingredient.name}</RecipeIngredientName>
-                  <RecipeIngredientMeasure>
-                    {ingredient.measure}
-                  </RecipeIngredientMeasure>
-                </RecipeIngredient>
-              ))}
-            </RecipeIngredients>
-          </RecipeContainer>
+          <RecipieCard key={recipe.id} recipe={recipe} />
         ))}
-      </Container>
-    </>
+      </RecipeGrid>
+    </Container>
   );
 };
 

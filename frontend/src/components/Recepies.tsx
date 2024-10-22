@@ -72,6 +72,24 @@ const Recepies: React.FC = () => {
     }
   };
 
+  const fetchRecipesFromDb = async (): Promise<IRecipe[] | undefined> => {
+    try {
+      const response = await fetch("/api");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data: IRecipe[] = await response.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecipesFromDb();
+  }, []);
+
   const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
     return recipes.meals.map((meal) => {
       const ingredients = Object.entries(meal).reduce((acc, [key, value]) => {

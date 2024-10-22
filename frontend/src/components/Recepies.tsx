@@ -7,6 +7,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 2rem;
+  width: 100%;
 `;
 
 const Title = styled.h1`
@@ -31,8 +32,8 @@ const Input = styled.input`
 
 const RecipeGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
   width: 100%;
 `;
 
@@ -45,6 +46,7 @@ interface IMeal {
 export interface IRecipe {
   id: string;
   title: string;
+  image: string | null;
   ingredients: { name: string; measure: string }[];
 }
 
@@ -86,6 +88,7 @@ const Recepies: React.FC = () => {
 
       return {
         id: meal.idMeal,
+        image: meal.strMealThumb,
         title: meal.strMeal,
         ingredients,
       };
@@ -96,6 +99,7 @@ const Recepies: React.FC = () => {
     const recipes = await fetchRecipes();
     if (recipes) {
       const processedRecipes = destructureRecipes(recipes);
+      console.log(processedRecipes);
       setRecipes(processedRecipes);
     }
   };

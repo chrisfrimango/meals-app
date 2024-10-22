@@ -1,11 +1,13 @@
-import "./App.css";
+// import "./App.css";
 import Recepies from "./components/Recepies";
 import styled from "styled-components";
 
 const Container = styled.div`
-  height: 100vh;
-  width: 100vh;
-  padding: 2rem;
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* width: 100%; */
+  padding: 0 1rem;
 `;
 
 function App() {

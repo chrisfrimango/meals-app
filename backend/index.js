@@ -27,8 +27,8 @@ const app = express(),
 //   response.send({ hello: "World" });
 // });
 
-app.get("/api", async (req, res) => {
-  const { rows } = await client.query("SELECT * FROM recipes");
+app.get("/api/favorite", async (req, res) => {
+  const { rows } = await client.query("SELECT * FROM recipieFavorite");
   res.send(rows);
 });
 

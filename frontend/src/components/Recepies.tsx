@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import RecipieCard from "./RecipieCard";
+// import RecipieCard from "./RecipieCard";
+import RecipeReviewCard from "./Card";
 
 const Container = styled.div`
   display: flex;
@@ -47,7 +48,9 @@ export interface IRecipe {
   id: string;
   title: string;
   image: string | null;
+  instructions: string | null;
   ingredients: { name: string; measure: string }[];
+  tags: string | null;
 }
 
 interface IRecipes {
@@ -57,6 +60,13 @@ interface IRecipes {
 const Recepies: React.FC = () => {
   const [recipes, setRecipes] = useState<IRecipe[]>([]);
   const [search, setSearch] = useState("");
+  // const [expandedCards, setExpandedCards] = useState<{
+  //   [key: string]: boolean;
+  // }>({});
+
+  // const handleExpandClick = (id: string) => {
+  //   setExpandedCards((prev) => ({ ...prev, [id]: !prev[id] }));
+  // };
 
   const fetchRecipes = async (): Promise<IRecipes | undefined> => {
     try {
@@ -72,9 +82,11 @@ const Recepies: React.FC = () => {
     }
   };
 
-  const fetchRecipesFromDb = async (): Promise<IRecipe[] | undefined> => {
+  const fetchFavoriteRecipesFromDb = async (): Promise<
+    IRecipe[] | undefined
+  > => {
     try {
-      const response = await fetch("/api");
+      const response = await fetch("/api/favorite");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -87,7 +99,7 @@ const Recepies: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchRecipesFromDb();
+    fetchFavoriteRecipesFromDb();
   }, []);
 
   const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
@@ -109,6 +121,8 @@ const Recepies: React.FC = () => {
         image: meal.strMealThumb,
         title: meal.strMeal,
         ingredients,
+        instructions: meal.strInstructions,
+        tags: meal.strTags,
       };
     });
   };
@@ -136,7 +150,13 @@ const Recepies: React.FC = () => {
       />
       <RecipeGrid>
         {recipes.map((recipe) => (
-          <RecipieCard key={recipe.id} recipe={recipe} />
+          // <RecipieCard key={recipe.id} recipe={recipe} />
+          <RecipeReviewCard
+            key={recipe.id}
+            recipe={recipe}
+            // expanded={expandedCards[recipe.id] || false}
+            // onExpandClick={() => handleExpandClick(recipe.id)}
+          />
         ))}
       </RecipeGrid>
     </Container>

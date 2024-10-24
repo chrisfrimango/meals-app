@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { IRecipe } from "./Recepies";
+import { IRecipe } from "../pages/Recepies";
 
 const RecipeCard = styled.div`
   display: flex;
@@ -33,6 +33,11 @@ const RecipeImage = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
+`;
+
+const RecipeInstructions = styled.p`
+  padding: 1.5rem;
+  color: #121604;
 `;
 
 const RecipeIngredients = styled.ul`
@@ -77,17 +82,26 @@ const RecipieCard: React.FC<RecipeCarsProps> = ({ recipe }) => {
   return (
     <RecipeCard>
       <RecipeTitle>{recipe.title}</RecipeTitle>
-      <RecipeImage src={recipe.image || ""} alt={recipe.title} />
-      <RecipeIngredients>
-        {recipe.ingredients.map((ingredient, index) => (
-          <RecipeIngredient key={index}>
-            <RecipeIngredientName>{ingredient.name}</RecipeIngredientName>
-            <RecipeIngredientMeasure>
-              {ingredient.measure}
-            </RecipeIngredientMeasure>
-          </RecipeIngredient>
-        ))}
-      </RecipeIngredients>
+      {recipe.image && (
+        <RecipeImage src={recipe.image || ""} alt={recipe.title} />
+      )}
+      {recipe.instructions !== "" && (
+        <RecipeInstructions>
+          {recipe.instructions?.substring(0, 300) + "..."}
+        </RecipeInstructions>
+      )}
+      {recipe.ingredients && (
+        <RecipeIngredients>
+          {recipe.ingredients.map((ingredient, index) => (
+            <RecipeIngredient key={index}>
+              <RecipeIngredientName>{ingredient.name}</RecipeIngredientName>
+              <RecipeIngredientMeasure>
+                {ingredient.measure}
+              </RecipeIngredientMeasure>
+            </RecipeIngredient>
+          ))}
+        </RecipeIngredients>
+      )}
     </RecipeCard>
   );
 };

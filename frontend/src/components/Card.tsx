@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 // import CardMedia from "@mui/material/CardMedia";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
@@ -16,8 +17,8 @@ import {
 } from "../api/favoritesApi";
 interface RecipeReviewCardProps {
   recipe: IRecipe;
-  favorite: IRecipe[];
   onFavoriteChange: () => void;
+  isFavoritePage: boolean;
 }
 
 const RecipeImage = styled.img`
@@ -38,26 +39,24 @@ const RecipeTitleStyled = {
 
 const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
   recipe,
-  favorite,
-  onFavoriteChange,
+  onFavoriteChange = () => {},
+  isFavoritePage,
 }) => {
   const [isFavorite, setIsFavorite] = useState(recipe.favorite || false);
-  console.log(recipe.image);
 
   const handleFavorites = async () => {
     const updateFavorite = !isFavorite;
     if (updateFavorite) {
       const newFavorite = { ...recipe, favorite: updateFavorite };
-      const success = await addFavoriteRecipeToDb(newFavorite);
+      await addFavoriteRecipeToDb(newFavorite);
       console.log("Recipe added to favorites");
-      console.log(success);
+      setIsFavorite(true);
       onFavoriteChange();
     } else {
-      const success = await deleteFavoriteRecipeFromDb(recipe.id);
-      setIsFavorite(updateFavorite);
+      await deleteFavoriteRecipeFromDb(recipe.id);
+      setIsFavorite(false);
       onFavoriteChange();
       console.log("Recipe deleted from favorites");
-      console.log(success);
     }
   };
 
@@ -103,7 +102,11 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites" onClick={handleFavorites}>
-          <FavoriteIcon sx={{ color: `${isFavorite ? "red" : "grey"}` }} />
+          {isFavoritePage ? (
+            <DeleteForeverIcon sx={{ color: "grey" }} />
+          ) : (
+            <FavoriteIcon sx={{ color: `${isFavorite ? "red" : "grey"}` }} />
+          )}
         </IconButton>
       </CardActions>
     </Card>

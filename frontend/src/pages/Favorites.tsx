@@ -61,6 +61,7 @@ const Favorites: React.FC = () => {
             key={favo.id}
             recipe={favo}
             onFavoriteChange={updateFavorites}
+            isFavoritePage={true}
           />
         ))}
       </RecipeGrid>

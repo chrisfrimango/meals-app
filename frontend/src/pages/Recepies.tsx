@@ -54,9 +54,8 @@ export interface IRecipes {
 
 const Recepies: React.FC = () => {
   const [search, setSearch] = useState("");
-  const { recipesData, favoritesData } = useLoaderData() as {
+  const { recipesData } = useLoaderData() as {
     recipesData: IRecipe[];
-    favoritesData: IRecipe[];
   };
 
   const navigate = useNavigate();
@@ -80,7 +79,8 @@ const Recepies: React.FC = () => {
           <RecipeReviewCard
             key={recipe.id}
             recipe={recipe}
-            favorite={favoritesData}
+            onFavoriteChange={() => {}}
+            isFavoritePage={false}
           />
         ))}
       </RecipeGrid>

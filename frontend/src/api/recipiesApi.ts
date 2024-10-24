@@ -37,6 +37,7 @@ export const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
       ingredients,
       instructions: meal.strInstructions,
       tags: meal.strTags,
+      favorite: false,
     };
   });
 };

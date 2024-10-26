@@ -15,7 +15,6 @@ module.exports = {
       const recipeQuery = `
         INSERT INTO recipieFavorite (title, image_url, instructions, incoming_id, favorite)
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING *
       `;
 
       const recipeValues = [title, image, instructions, id, favorite];

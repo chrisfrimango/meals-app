@@ -5,6 +5,7 @@ const pool = new Pool({
 });
 
 module.exports = {
+
   getFavorites: async () => {
     const { rows } = await pool.query("SELECT * FROM recipieFavorite");
     return rows;
@@ -18,9 +19,7 @@ module.exports = {
       `;
 
       const recipeValues = [title, image, instructions, id, favorite];
-      console.log("🚀 ~ addFavorite: ~ recipeValues:", recipeValues);
       const recipeResult = await pool.query(recipeQuery, recipeValues);
-      console.log("🚀 ~ addFavorite: ~ recipeResult:", recipeResult);
       // const recipeId = recipeResult.rows[0].id;
 
       // if (ingredients && ingredients.length > 0) {

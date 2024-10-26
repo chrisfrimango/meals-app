@@ -3,6 +3,7 @@ import styled from "styled-components";
 import RecipeReviewCard from "../components/Card";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { fetchFavoriteRecipesFromDb } from "../api/favoritesApi";
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -79,15 +80,15 @@ const Recepies: React.FC = () => {
     setFavoriteRecipesData(updatedFavorites);
   };
 
-  useEffect(() => {
-    updateFavoriteStatus();
-  }, [favoriteRecipesData]);
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = e.target.value;
     setSearch(newSearch);
     navigate(`/?search=${newSearch}`);
   };
+
+  useEffect(() => {
+    updateFavoriteStatus();
+  }, [favoriteRecipesData, intialRecipesData]);
 
   return (
     <Container>

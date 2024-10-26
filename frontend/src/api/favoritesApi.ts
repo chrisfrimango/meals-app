@@ -8,7 +8,7 @@ export const fetchFavoriteRecipesFromDb = async (): Promise<IRecipe[]> => {
     }
     return await response.json();
   } catch (error) {
-    console.error(error);
+    console.log("Error fetching favorite recipes", error);
     return [];
   }
 };
@@ -50,9 +50,9 @@ export const addFavoriteRecipeToDb = async (newFavorite: IRecipe) => {
     console.log("Recipe added to favorites");
     return true;
   } catch (error) {
-    console.error("Error adding recipe to favorites", error);
+    console.log("Error adding recipe to favorites", error);
     if (error instanceof Error) {
-      console.error("Error details:", error.message);
+      console.log("Error details:", error.message);
     }
     return false;
   }

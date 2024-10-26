@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import RecipeReviewCard from "../components/Card";
-import { useLoaderData } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { fetchFavoriteRecipesFromDb } from "../api/favoritesApi";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -46,6 +45,7 @@ export interface IRecipe {
   ingredients: { name: string; measure: string }[];
   tags: string | null;
   favorite: boolean | null;
+  incoming_id: string;
 }
 
 export interface IRecipes {
@@ -54,11 +54,37 @@ export interface IRecipes {
 
 const Recepies: React.FC = () => {
   const [search, setSearch] = useState("");
-  const { recipesData } = useLoaderData() as {
-    recipesData: IRecipe[];
+  const [recipes, setRecipes] = useState<IRecipe[]>([]);
+  const { intialRecipesData, favoritesData } = useLoaderData() as {
+    intialRecipesData: IRecipe[];
+    favoritesData: IRecipe[];
   };
+  const [favoriteRecipesData, setFavoriteRecipesData] =
+    useState<IRecipe[]>(favoritesData);
+
+  console.log("🚀 ~ Recepies ~ intialRecipesData:", intialRecipesData);
+  console.log("🚀 ~ Recepies ~ favoritesData:", favoritesData);
 
   const navigate = useNavigate();
+
+  const updateFavoriteStatus = async () => {
+    const recipesWithFavorite = intialRecipesData.map((recipe) => ({
+      ...recipe,
+      favorite: favoriteRecipesData.some(
+        (favorite) => favorite.incoming_id === recipe.id
+      ),
+    }));
+    setRecipes(recipesWithFavorite);
+  };
+
+  const updateFavorites = async () => {
+    const updatedFavorites = await fetchFavoriteRecipesFromDb();
+    setFavoriteRecipesData(updatedFavorites);
+  };
+
+  useEffect(() => {
+    updateFavoriteStatus();
+  }, [favoriteRecipesData]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = e.target.value;
@@ -75,11 +101,11 @@ const Recepies: React.FC = () => {
         placeholder="Search for a recipe"
       />
       <RecipeGrid>
-        {recipesData.map((recipe) => (
+        {recipes.map((recipe) => (
           <RecipeReviewCard
             key={recipe.id}
             recipe={recipe}
-            onFavoriteChange={() => {}}
+            onFavoriteChange={updateFavorites}
             isFavoritePage={false}
           />
         ))}

@@ -14,9 +14,18 @@ export const fetchFavoriteRecipesFromDb = async (): Promise<IRecipe[]> => {
 };
 
 export const addFavoriteRecipeToDb = async (newFavorite: IRecipe) => {
+  console.log("🚀 ~ addFavoriteRecipeToDb ~ newFavorite:", newFavorite);
   const { id, title, image, instructions, favorite } = newFavorite;
 
   try {
+    const checkResponse = await fetch(`/api/favorites/check/${id}`);
+    const { exists } = await checkResponse.json();
+
+    if (exists) {
+      console.log("Recipe already exists in favorites");
+      return true;
+    }
+
     const response = await fetch(`/api/favorites`, {
       method: "POST",
       headers: {
@@ -32,6 +41,10 @@ export const addFavoriteRecipeToDb = async (newFavorite: IRecipe) => {
     });
     if (!response.ok) {
       const errorData = await response.json();
+      console.error(
+        "🚀 ~ addFavoriteRecipeToDb ~ server response errorData:",
+        errorData
+      );
       throw new Error(errorData.message || "Failed to add recipe to favorites");
     }
 
@@ -39,6 +52,9 @@ export const addFavoriteRecipeToDb = async (newFavorite: IRecipe) => {
     return true;
   } catch (error) {
     console.error("Error adding recipe to favorites", error);
+    if (error instanceof Error) {
+      console.error("Error details:", error.message);
+    }
     return false;
   }
 };

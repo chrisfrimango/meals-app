@@ -31,5 +31,10 @@ router.delete("/:id", async (req, res) => {
   res.send({ message: "Recipe deleted from favorites", result });
 });
 
+router.get("/check/:id", async (req, res) => {
+  const { id } = req.params;
+  const exists = await db.checkFavoriteExists(id);
+  res.json({ exists });
+});
 
 module.exports = router;

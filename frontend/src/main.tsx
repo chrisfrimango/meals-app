@@ -12,15 +12,23 @@ const combinedLoader = async ({ request }: { request: Request }) => {
   const url = new URL(request.url);
   const search = url.searchParams.get("search") || "";
 
-  const [rawRecipes, favoriteRecipes] = await Promise.all([
-    fetchRecipes(search),
-    fetchFavoriteRecipesFromDb(),
-  ]);
+  try {
+    const [rawRecipes, favoriteRecipes] = await Promise.all([
+      fetchRecipes(search),
+      fetchFavoriteRecipesFromDb(),
+    ]);
 
-  return {
-    recipesData: rawRecipes ? destructureRecipes(rawRecipes) : [],
-    favoritesData: favoriteRecipes,
-  };
+    return {
+      intialRecipesData: rawRecipes ? destructureRecipes(rawRecipes) : [],
+      favoritesData: favoriteRecipes,
+    };
+  } catch (error) {
+    console.error("Error in combinedLoader", error);
+    return {
+      intialRecipesData: [],
+      favoritesData: [],
+    };
+  }
 };
 
 const router = createBrowserRouter([

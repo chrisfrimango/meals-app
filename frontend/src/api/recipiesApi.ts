@@ -10,13 +10,18 @@ export const fetchRecipes = async (
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data: IRecipes = await response.json();
-    return data;
+    return data.meals ? data : { meals: [] };
   } catch (error) {
     console.error(error);
+    return { meals: [] };
   }
 };
 
 export const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
+  if (!recipes || !recipes.meals) {
+    return [];
+  }
+
   return recipes.meals.map((meal) => {
     const ingredients = Object.entries(meal).reduce((acc, [key, value]) => {
       if (key.startsWith("strIngredient") && value) {

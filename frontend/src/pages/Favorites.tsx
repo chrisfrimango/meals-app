@@ -27,6 +27,7 @@ const RecipeGrid = styled.div`
 const Typography = styled.p`
   margin-bottom: 2rem;
   color: #3d1716;
+  text-align: center;
 `;
 
 export interface IRecipe {
@@ -37,12 +38,15 @@ export interface IRecipe {
   ingredients: { name: string; measure: string }[];
   tags: string | null;
   favorite: boolean | null;
+  incoming_id: string;
 }
 
 const Favorites: React.FC = () => {
   const favoriteRecipes = useLoaderData() as IRecipe[];
   const [favoriteRecipesData, setFavoriteRecipesData] =
     useState(favoriteRecipes);
+
+  console.log("🚀 ~ Favorites ~ favoriteRecipesData:", favoriteRecipesData);
 
   const updateFavorites = async () => {
     const updatedFavorites = await fetchFavoriteRecipesFromDb();
@@ -52,10 +56,10 @@ const Favorites: React.FC = () => {
   return (
     <Container>
       <Title>Favorites</Title>
+      {favoriteRecipes.length === 0 && (
+        <Typography>No favorite recipes found</Typography>
+      )}
       <RecipeGrid>
-        {favoriteRecipes.length === 0 && (
-          <Typography>No favorite recipes found</Typography>
-        )}
         {favoriteRecipesData.map((favo) => (
           <RecipeReviewCard
             key={favo.id}

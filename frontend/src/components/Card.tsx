@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+// import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
@@ -42,21 +42,21 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
   onFavoriteChange = () => {},
   isFavoritePage,
 }) => {
-  const [isFavorite, setIsFavorite] = useState(recipe.favorite || false);
-
   const handleFavorites = async () => {
-    const updateFavorite = !isFavorite;
-    if (updateFavorite) {
-      const newFavorite = { ...recipe, favorite: updateFavorite };
-      await addFavoriteRecipeToDb(newFavorite);
-      console.log("Recipe added to favorites");
-      setIsFavorite(true);
-      onFavoriteChange();
-    } else {
+    if (recipe.favorite) {
       await deleteFavoriteRecipeFromDb(recipe.id);
-      setIsFavorite(false);
+      // setIsFavorite(false);
       onFavoriteChange();
       console.log("Recipe deleted from favorites");
+    } else {
+      const success = await addFavoriteRecipeToDb({
+        ...recipe,
+        favorite: true,
+      });
+      if (success) {
+        onFavoriteChange();
+        console.log("Recipe added to favorites");
+      }
     }
   };
 
@@ -105,7 +105,9 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
           {isFavoritePage ? (
             <DeleteForeverIcon sx={{ color: "grey" }} />
           ) : (
-            <FavoriteIcon sx={{ color: `${isFavorite ? "red" : "grey"}` }} />
+            <FavoriteIcon
+              sx={{ color: `${recipe.favorite ? "red" : "grey"}` }}
+            />
           )}
         </IconButton>
       </CardActions>

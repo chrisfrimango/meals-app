@@ -14,7 +14,6 @@ export const fetchFavoriteRecipesFromDb = async (): Promise<IRecipe[]> => {
 };
 
 export const addFavoriteRecipeToDb = async (newFavorite: IRecipe) => {
-  console.log("🚀 ~ addFavoriteRecipeToDb ~ newFavorite:", newFavorite);
   const { id, title, image, instructions, favorite } = newFavorite;
 
   try {

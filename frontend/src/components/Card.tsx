@@ -45,9 +45,7 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
   const handleFavorites = async () => {
     if (recipe.favorite) {
       await deleteFavoriteRecipeFromDb(recipe.id);
-      // setIsFavorite(false);
       onFavoriteChange();
-      console.log("Recipe deleted from favorites");
     } else {
       const success = await addFavoriteRecipeToDb({
         ...recipe,
@@ -55,7 +53,6 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
       });
       if (success) {
         onFavoriteChange();
-        console.log("Recipe added to favorites");
       }
     }
   };

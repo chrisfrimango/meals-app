@@ -62,9 +62,6 @@ const Recepies: React.FC = () => {
   const [favoriteRecipesData, setFavoriteRecipesData] =
     useState<IRecipe[]>(favoritesData);
 
-  console.log("🚀 ~ Recepies ~ intialRecipesData:", intialRecipesData);
-  console.log("🚀 ~ Recepies ~ favoritesData:", favoritesData);
-
   const navigate = useNavigate();
 
   const updateFavoriteStatus = async () => {

@@ -46,8 +46,6 @@ const Favorites: React.FC = () => {
   const [favoriteRecipesData, setFavoriteRecipesData] =
     useState(favoriteRecipes);
 
-  console.log("🚀 ~ Favorites ~ favoriteRecipesData:", favoriteRecipesData);
-
   const updateFavorites = async () => {
     const updatedFavorites = await fetchFavoriteRecipesFromDb();
     setFavoriteRecipesData(updatedFavorites);

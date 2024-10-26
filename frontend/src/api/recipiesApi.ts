@@ -37,6 +37,7 @@ export const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
 
     return {
       id: meal.idMeal,
+      incoming_id: meal.idMeal,
       image: meal.strMealThumb,
       title: meal.strMeal,
       ingredients,

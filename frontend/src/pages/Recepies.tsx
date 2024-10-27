@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import RecipeReviewCard from "../components/Card";
+import Card from "../components/Card";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import { fetchFavoriteRecipesFromDb } from "../api/favoritesApi";
+import {
+  addFavoriteRecipeToDb,
+  deleteFavoriteRecipeFromDb,
+} from "../api/favoritesApi";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const Container = styled.div`
   display: flex;
@@ -55,31 +59,33 @@ export interface IRecipes {
 
 const Recepies: React.FC = () => {
   const [search, setSearch] = useState("");
-  const [recipes, setRecipes] = useState<IRecipe[]>([]);
-  const { intialRecipesData, favoritesData } = useLoaderData() as {
+  const { intialRecipesData } = useLoaderData() as {
     intialRecipesData: IRecipe[];
-    favoritesData: IRecipe[];
   };
-  const [favoriteRecipesData, setFavoriteRecipesData] =
-    useState<IRecipe[]>(favoritesData);
+
+  console.log("🚀 ~ Recepies ~ intialRecipesData:", intialRecipesData);
+  const [recipes, setRecipes] = useState<IRecipe[]>(intialRecipesData || []);
 
   const navigate = useNavigate();
 
-  const updateFavoriteStatus = async () => {
-    const recipesWithFavorite = intialRecipesData.map((recipe) => ({
-      ...recipe,
-      favorite: favoriteRecipesData.some(
-        (favorite) => favorite.incoming_id === recipe.id
-      ),
-    }));
-    setRecipes(recipesWithFavorite);
-  };
+  const updateFavorite = async (id: string, isFavorite: boolean) => {
+    try {
+      setRecipes((prevRecipes) =>
+        prevRecipes.map((recipe) =>
+          recipe.id === id ? { ...recipe, favorite: isFavorite } : recipe
+        )
+      );
 
-  const updateFavorites = async () => {
-    const updatedFavorites = await fetchFavoriteRecipesFromDb();
-    setFavoriteRecipesData(updatedFavorites);
+      if (isFavorite) {
+        const recipe = recipes.find((r) => r.id === id);
+        if (recipe) await addFavoriteRecipeToDb(recipe);
+      } else {
+        await deleteFavoriteRecipeFromDb(id);
+      }
+    } catch (error) {
+      console.error("Failed to update favorite status:", error);
+    }
   };
-
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newSearch = e.target.value;
     setSearch(newSearch);
@@ -87,8 +93,8 @@ const Recepies: React.FC = () => {
   };
 
   useEffect(() => {
-    updateFavoriteStatus();
-  }, [favoriteRecipesData, intialRecipesData]);
+    setRecipes(intialRecipesData || []);
+  }, [intialRecipesData]);
 
   return (
     <Container>
@@ -100,11 +106,15 @@ const Recepies: React.FC = () => {
       />
       <RecipeGrid>
         {recipes.map((recipe) => (
-          <RecipeReviewCard
+          <Card
             key={recipe.id}
             recipe={recipe}
-            onFavoriteChange={updateFavorites}
-            isFavoritePage={false}
+            onFavoriteChange={updateFavorite}
+            iconButton={
+              <FavoriteIcon
+                sx={{ color: `${recipe.favorite ? "red" : "grey"}` }}
+              />
+            }
           />
         ))}
       </RecipeGrid>

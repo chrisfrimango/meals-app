@@ -40,10 +40,6 @@ export const addFavoriteRecipeToDb = async (newFavorite: IRecipe) => {
     });
     if (!response.ok) {
       const errorData = await response.json();
-      console.error(
-        "🚀 ~ addFavoriteRecipeToDb ~ server response errorData:",
-        errorData
-      );
       throw new Error(errorData.message || "Failed to add recipe to favorites");
     }
 

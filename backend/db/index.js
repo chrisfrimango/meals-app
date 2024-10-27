@@ -1,73 +1,3 @@
-// const { Client } = require("pg");
-
-// const client = new Client({
-//   connectionString: process.env.PGURI,
-// });
-
-// client.connect();
-
-// module.exports = {
-//   getFavorites: async () => {
-//     try {
-//       const { rows } = await client.query("SELECT * FROM recipieFavorite");
-//       return rows;
-//     } catch (error) {
-//       console.error("Error in getFavorites:", error);
-//       throw error;
-//     }
-//   },
-
-//   addFavorite: async (id, title, image, instructions, favorite) => {
-//     try {
-//       const recipeQuery = `
-//         INSERT INTO recipieFavorite (title, image_url, instructions, incoming_id, favorite)
-//         VALUES ($1, $2, $3, $4, $5)
-//         RETURNING *
-//       `;
-
-//       const recipeValues = [title, image, instructions, id, favorite];
-//       const { rows } = await client.query(recipeQuery, recipeValues);
-
-//       console.log("🚀 ~ addFavorite: ~ result:", rows[0]);
-
-//       return rows[0];
-//     } catch (error) {
-//       console.error("Error adding favorite recipe", error);
-//       console.error("🚀 ~ addFavorite: ~ error:", error.message);
-//       if (error.code) {
-//         console.error("🚀 ~ addFavorite: ~ error code:", error.code);
-//       }
-//       throw error;
-//     }
-//   },
-
-//   deleteFavorite: async (id) => {
-//     try {
-//       const { rows } = await client.query(
-//         "DELETE FROM recipieFavorite WHERE id = $1 RETURNING *",
-//         [id]
-//       );
-//       return rows[0];
-//     } catch (error) {
-//       console.error("Error in deleteFavorite:", error);
-//       throw error;
-//     }
-//   },
-
-//   checkFavoriteExists: async (id) => {
-//     try {
-//       const { rows } = await client.query(
-//         "SELECT EXISTS(SELECT 1 FROM recipieFavorite WHERE incoming_id = $1)",
-//         [id]
-//       );
-//       return rows[0].exists;
-//     } catch (error) {
-//       console.error("Error in checkFavoriteExists:", error);
-//       throw error;
-//     }
-//   },
-// };
-
 const { Pool } = require("pg");
 
 const pool = new Pool({
@@ -106,12 +36,10 @@ module.exports = {
       //     await pool.query(ingredientQuery, ingredientValues);
       //   }
       // }
-      console.log("🚀 ~ addFavorite: ~ recipeResult:", recipeResult.rows[0]);
 
       return recipeResult.rows[0];
     } catch (error) {
       console.error("Error adding favorite recipe", error);
-      console.error("🚀 ~ addFavorite: ~ error:", error.message);
       if (error.code) {
         console.error("🚀 ~ addFavorite: ~ error:", error.code);
       }

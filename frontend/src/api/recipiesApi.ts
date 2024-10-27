@@ -1,5 +1,6 @@
 import { IRecipes } from "../pages/Recepies";
 import { IRecipe } from "../pages/Recepies";
+import { fetchFavoriteRecipesFromDb } from "./favoritesApi";
 
 export const fetchRecipes = async (
   search: string
@@ -17,10 +18,14 @@ export const fetchRecipes = async (
   }
 };
 
-export const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
+export const destructureRecipes = async (
+  recipes: IRecipes
+): Promise<IRecipe[]> => {
   if (!recipes || !recipes.meals) {
     return [];
   }
+
+  const favoriteRecipes = await fetchFavoriteRecipesFromDb();
 
   return recipes.meals.map((meal) => {
     const ingredients = Object.entries(meal).reduce((acc, [key, value]) => {
@@ -35,6 +40,10 @@ export const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
       return acc;
     }, [] as { name: string; measure: string }[]);
 
+    const isFavorite = favoriteRecipes.some(
+      (fav) => fav.title === meal.strMeal
+    );
+
     return {
       id: meal.idMeal,
       incoming_id: meal.idMeal,
@@ -43,7 +52,7 @@ export const destructureRecipes = (recipes: IRecipes): IRecipe[] => {
       ingredients,
       instructions: meal.strInstructions,
       tags: meal.strTags,
-      favorite: false,
+      favorite: isFavorite,
     };
   });
 };

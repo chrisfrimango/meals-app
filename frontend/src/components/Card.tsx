@@ -1,15 +1,11 @@
 import * as React from "react";
-// import { useState, useEffect } from "react";
-import styled from "styled-components";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
-// import CardMedia from "@mui/material/CardMedia";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import { IRecipe } from "../pages/Recepies";
 import {
   addFavoriteRecipeToDb,
@@ -17,15 +13,9 @@ import {
 } from "../api/favoritesApi";
 interface RecipeReviewCardProps {
   recipe: IRecipe;
-  onFavoriteChange: () => void;
-  isFavoritePage: boolean;
+  onFavoriteChange: (id: string, isFavorite: boolean) => void;
+  iconButton: React.ReactNode;
 }
-
-const RecipeImage = styled.img`
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-`;
 
 const RecipeTitleStyled = {
   backgroundColor: "#079880",
@@ -37,37 +27,44 @@ const RecipeTitleStyled = {
   background: "linear-gradient(135deg, #077469 0%, #105a2e 100%)",
 };
 
-const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
+const RecipeCard: React.FC<RecipeReviewCardProps> = ({
   recipe,
-  onFavoriteChange = () => {},
-  isFavoritePage,
+  onFavoriteChange,
+  iconButton,
 }) => {
   const handleFavorites = async () => {
-    if (recipe.favorite) {
-      await deleteFavoriteRecipeFromDb(recipe.id);
-      onFavoriteChange();
-    } else {
-      const success = await addFavoriteRecipeToDb({
-        ...recipe,
-        favorite: true,
-      });
-      if (success) {
-        onFavoriteChange();
+    const newFavoriteStatus = !recipe.favorite;
+    try {
+      if (newFavoriteStatus) {
+        console.log("Adding favorite recipe:", recipe.id);
+        const success = await addFavoriteRecipeToDb({
+          ...recipe,
+          incoming_id: recipe.id,
+          favorite: true,
+        });
+        if (success) {
+          onFavoriteChange(recipe.id, true);
+        }
+      } else {
+        console.log("Deleting favorite recipe:", recipe.id);
+        await deleteFavoriteRecipeFromDb(recipe.id);
+        onFavoriteChange(recipe.id, false);
       }
+    } catch (error) {
+      console.error("Failed to update favorite status:", error);
     }
   };
 
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardHeader title={recipe.title} sx={RecipeTitleStyled} />
-      {/* <CardMedia
-        component="img"
-        height="194"
-        image={recipe.image}
-        alt={recipe.title}
-      /> */}
       {recipe.image && (
-        <RecipeImage src={`${recipe.image}` || ""} alt={recipe.title} />
+        <CardMedia
+          component="img"
+          height="194"
+          image={recipe.image}
+          alt={recipe.title}
+        />
       )}
       <CardContent>
         {recipe.instructions && (
@@ -99,17 +96,11 @@ const RecipeReviewCard: React.FC<RecipeReviewCardProps> = ({
       </CardContent>
       <CardActions disableSpacing>
         <IconButton aria-label="add to favorites" onClick={handleFavorites}>
-          {isFavoritePage ? (
-            <DeleteForeverIcon sx={{ color: "grey" }} />
-          ) : (
-            <FavoriteIcon
-              sx={{ color: `${recipe.favorite ? "red" : "grey"}` }}
-            />
-          )}
+          {iconButton}
         </IconButton>
       </CardActions>
     </Card>
   );
 };
 
-export default RecipeReviewCard;
+export default RecipeCard;

@@ -6,7 +6,6 @@ dotenv.config();
 
 const app = express();
 
-// Mitt Middleware
 app.use(express.json());
 app.use(express.static(path.join(path.resolve(), "dist")));
 

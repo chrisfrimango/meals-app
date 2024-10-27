@@ -8,25 +8,23 @@ import Recepies from "./pages/Recepies.tsx";
 import { fetchFavoriteRecipesFromDb } from "./api/favoritesApi";
 import { fetchRecipes, destructureRecipes } from "./api/recipiesApi";
 
-const combinedLoader = async ({ request }: { request: Request }) => {
+const recipesLoader = async ({ request }: { request: Request }) => {
   const url = new URL(request.url);
   const search = url.searchParams.get("search") || "";
 
   try {
-    const [rawRecipes, favoriteRecipes] = await Promise.all([
-      fetchRecipes(search),
-      fetchFavoriteRecipesFromDb(),
-    ]);
+    const rawRecipes = await fetchRecipes(search);
+    const initialRecipesData = rawRecipes
+      ? await destructureRecipes(rawRecipes)
+      : [];
 
     return {
-      intialRecipesData: rawRecipes ? destructureRecipes(rawRecipes) : [],
-      favoritesData: favoriteRecipes,
+      intialRecipesData: initialRecipesData,
     };
   } catch (error) {
     console.error("Error in combinedLoader", error);
     return {
       intialRecipesData: [],
-      favoritesData: [],
     };
   }
 };
@@ -40,7 +38,7 @@ const router = createBrowserRouter([
         path: "/",
         index: true,
         element: <Recepies />,
-        loader: combinedLoader,
+        loader: recipesLoader,
       },
       {
         path: "/favorites",

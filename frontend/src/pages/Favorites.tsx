@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useLoaderData } from "react-router-dom";
-import RecipeReviewCard from "../components/Card";
+import RecipeCard from "../components/Card";
 import { fetchFavoriteRecipesFromDb } from "../api/favoritesApi";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const Container = styled.div`
   display: flex;
@@ -59,11 +60,11 @@ const Favorites: React.FC = () => {
       )}
       <RecipeGrid>
         {favoriteRecipesData.map((favo) => (
-          <RecipeReviewCard
+          <RecipeCard
             key={favo.id}
             recipe={favo}
             onFavoriteChange={updateFavorites}
-            isFavoritePage={true}
+            iconButton={<DeleteForeverIcon sx={{ color: "grey" }} />}
           />
         ))}
       </RecipeGrid>

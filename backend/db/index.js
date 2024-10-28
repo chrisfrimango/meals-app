@@ -13,7 +13,7 @@ module.exports = {
   addFavorite: async (id, title, image, instructions, favorite) => {
     try {
       const recipeQuery = `
-        INSERT INTO recipieFavorite (title, image_url, instructions, incoming_id, favorite)
+        INSERT INTO recipieFavorite (title, image, instructions, incoming_id, favorite)
         VALUES ($1, $2, $3, $4, $5)
       `;
 
